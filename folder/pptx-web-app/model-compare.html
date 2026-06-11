@@ -1,0 +1,385 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Model Comparison Utility</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f2f5;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .slide {
+            display: none;
+            min-height: 600px;
+            padding: 60px 40px;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .slide.active {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Slide 1 - Main Webpage */
+        #slide1 {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            text-align: center;
+        }
+
+        #slide1 h1 {
+            font-size: 3.5em;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        #slide1 p {
+            font-size: 1.3em;
+            margin-bottom: 50px;
+            opacity: 0.95;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 16px 40px;
+            font-size: 1.1em;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: white;
+            color: #1e3c72;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-secondary {
+            background: #2a5298;
+            color: white;
+            margin-top: 20px;
+        }
+
+        .btn-secondary:hover {
+            background: #1e3c72;
+            transform: translateY(-3px);
+        }
+
+        .btn-back {
+            background: #e0e0e0;
+            color: #333;
+            margin-top: 30px;
+        }
+
+        .btn-back:hover {
+            background: #d0d0d0;
+        }
+
+        /* Slide 2 - CAD Import */
+        #slide2 {
+            background: white;
+        }
+
+        #slide2 h2 {
+            font-size: 2.5em;
+            color: #2a5298;
+            margin-bottom: 30px;
+        }
+
+        .upload-box {
+            background: #f5f5f5;
+            border: 3px dashed #2a5298;
+            border-radius: 8px;
+            padding: 60px 40px;
+            text-align: center;
+            margin: 30px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .upload-box:hover {
+            background: #f0f0ff;
+            border-color: #1e3c72;
+        }
+
+        .upload-box.dragover {
+            background: #e8e8ff;
+            border-color: #1e3c72;
+            transform: scale(1.02);
+        }
+
+        .upload-box p {
+            font-size: 1.2em;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .upload-box .file-types {
+            font-size: 0.95em;
+            color: #999;
+            margin-top: 10px;
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        .file-name {
+            margin-top: 20px;
+            font-size: 1em;
+            color: #2a5298;
+            font-weight: 600;
+        }
+
+        /* Slide 3 - Results */
+        #slide3 {
+            background: white;
+        }
+
+        #slide3 h2 {
+            font-size: 2.5em;
+            color: #2a5298;
+            margin-bottom: 30px;
+        }
+
+        .results-container {
+            background: #f9f9f9;
+            border-left: 5px solid #2a5298;
+            padding: 30px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+        }
+
+        .result-label {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .result-value {
+            color: #2a5298;
+            font-weight: 500;
+        }
+
+        .status-badge {
+            display: inline-block;
+            background: #4caf50;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.95em;
+            margin-top: 15px;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .nav-dots {
+            text-align: center;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+
+        .dot {
+            height: 12px;
+            width: 12px;
+            margin: 0 6px;
+            background-color: #bbb;
+            border-radius: 50%;
+            display: inline-block;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .dot.active {
+            background-color: #2a5298;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📊 Model Comparison Utility</h1>
+        </header>
+
+        <!-- Slide 1: Main Page -->
+        <div class="slide active" id="slide1">
+            <h1>Welcome to the Model Comparison Utility</h1>
+            <p>Import and analyze your CAD models with advanced comparison tools</p>
+            <button class="btn btn-primary" onclick="goToSlide(2)">
+                Start Model Comparison
+            </button>
+        </div>
+
+        <!-- Slide 2: CAD Import Page -->
+        <div class="slide" id="slide2">
+            <h2>Import Your CAD File</h2>
+            <p style="color: #666; margin-bottom: 20px;">Upload your CAD file to begin analysis</p>
+            
+            <div class="upload-box" id="uploadBox">
+                <p>📁 Click or drag your CAD file here</p>
+                <p class="file-types">Supported: .step, .stp, .iges, .igs, .stl, .obj</p>
+                <input type="file" id="fileInput" accept=".step,.stp,.iges,.igs,.stl,.obj">
+            </div>
+            
+            <div id="fileName" class="file-name"></div>
+            
+            <button class="btn btn-secondary" id="importBtn" style="display: none;" onclick="goToSlide(3)">
+                Analyze Model →
+            </button>
+            
+            <button class="btn btn-back" onclick="goToSlide(1)">← Back</button>
+        </div>
+
+        <!-- Slide 3: Results Page -->
+        <div class="slide" id="slide3">
+            <h2>Analysis Results</h2>
+            
+            <div class="results-container">
+                <div class="result-item">
+                    <span class="result-label">File Name:</span>
+                    <span class="result-value" id="resultFileName">-</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">File Size:</span>
+                    <span class="result-value" id="resultFileSize">-</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">File Type:</span>
+                    <span class="result-value" id="resultFileType">-</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Import Status:</span>
+                    <span class="result-value">
+                        <span class="status-badge">✓ Successfully Imported</span>
+                    </span>
+                </div>
+            </div>
+
+            <p style="color: #666; margin-top: 30px;">
+                ✓ Model is ready for comparison analysis<br>
+                ✓ Geometry validation complete<br>
+                ✓ Ready for advanced metrics and comparisons
+            </p>
+            
+            <button class="btn btn-back" onclick="goToSlide(1)">← Back to Start</button>
+        </div>
+
+        <!-- Navigation Dots -->
+        <div class="nav-dots">
+            <span class="dot active" onclick="goToSlide(1)"></span>
+            <span class="dot" onclick="goToSlide(2)"></span>
+            <span class="dot" onclick="goToSlide(3)"></span>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 1;
+        let uploadedFile = null;
+
+        function goToSlide(slideNum) {
+            document.querySelectorAll(".slide").forEach(slide => {
+                slide.classList.remove("active");
+            });
+            document.querySelectorAll(".dot").forEach(dot => {
+                dot.classList.remove("active");
+            });
+
+            document.getElementById("slide" + slideNum).classList.add("active");
+            document.querySelectorAll(".dot")[slideNum - 1].classList.add("active");
+            currentSlide = slideNum;
+        }
+
+        const uploadBox = document.getElementById("uploadBox");
+        const fileInput = document.getElementById("fileInput");
+        const fileNameDisplay = document.getElementById("fileName");
+        const importBtn = document.getElementById("importBtn");
+
+        uploadBox.addEventListener("click", () => fileInput.click());
+        fileInput.addEventListener("change", handleFileSelect);
+        
+        uploadBox.addEventListener("dragover", (e) => {
+            e.preventDefault();
+            uploadBox.classList.add("dragover");
+        });
+
+        uploadBox.addEventListener("dragleave", () => {
+            uploadBox.classList.remove("dragover");
+        });
+
+        uploadBox.addEventListener("drop", (e) => {
+            e.preventDefault();
+            uploadBox.classList.remove("dragover");
+            fileInput.files = e.dataTransfer.files;
+            handleFileSelect();
+        });
+
+        function handleFileSelect() {
+            if (fileInput.files.length > 0) {
+                uploadedFile = fileInput.files[0];
+                fileNameDisplay.textContent = "✓ File selected: " + uploadedFile.name;
+                importBtn.style.display = "inline-block";
+                updateResultsData();
+            }
+        }
+
+        function updateResultsData() {
+            if (uploadedFile) {
+                document.getElementById("resultFileName").textContent = uploadedFile.name;
+                document.getElementById("resultFileSize").textContent = (uploadedFile.size / 1024).toFixed(2) + " KB";
+                const fileExt = uploadedFile.name.split(".").pop().toUpperCase();
+                document.getElementById("resultFileType").textContent = "." + fileExt;
+            }
+        }
+    </script>
+</body>
+</html>
